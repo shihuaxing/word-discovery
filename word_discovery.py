@@ -190,6 +190,7 @@ import re
 db = pymongo.MongoClient().baike.items
 
 # 语料生成器，并且初步预处理语料
+# 这个生成器例子的具体含义不重要，只需要知道它就是逐句地把文本yield出来就行了
 def text_generator():
     for d in db.find().limit(5000000):
         yield re.sub(u'[^\u4e00-\u9fa50-9a-zA-Z ]+', '\n', d['text'])
@@ -202,6 +203,22 @@ vocab_file = 'wx.chars' # 字符集
 ngram_file = 'wx.ngrams' # ngram集
 output_file = 'wx.vocab' # 最后导出的词表
 
+
+"""
+# 读取《天龙八部》小说的生成器
+def text_generator():
+    with open('tianlongbabu.txt') as f:
+        for l in f:
+            yield re.sub(u'[^\u4e00-\u9fa50-9a-zA-Z ]+', '\n', l.decode('gbk'))
+
+
+min_count = 8
+order = 4
+corpus_file = 'tl.corpus' # 语料保存的文件名
+vocab_file = 'tl.chars' # 字符集
+ngram_file = 'tl.ngrams' # ngram集
+output_file = 'tl.vocab' # 最后导出的词表
+"""
 
 write_corpus(text_generator(), corpus_file) # 将语料转存为文本
 count_ngrams(corpus_file, order, vocab_file, ngram_file) # 用Kenlm统计ngram
